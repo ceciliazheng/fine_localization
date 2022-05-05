@@ -1,0 +1,4 @@
+pymavlink==2.4.29
+opencv-camera==0.10.11
+apriltag==0.0.16
+pyAprilTag==0.0.5

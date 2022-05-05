@@ -11,10 +11,9 @@ Creating a detector and realize Apriltag detection.
 
 import cv2
 import numpy as np
-import argparse
 import utility
 from scipy.spatial import distance
-from apriltag import apriltag
+from pupil_apriltags import Detector
 
 
 def create_detector(imagepath):
@@ -23,11 +22,8 @@ def create_detector(imagepath):
 	image = utility.parse_images(imagepath)
 	apriltagFamily = "NameOfFamily"
 	# Tuning detector parameters
-	options = apriltag.DetectorOptions(families = apriltagFamily, border = 1, nthreads = 4,
-										quad_decimate = 1.0, quad_blur = 0.0, refine_edges = True,
-										refine_decode = False, refine_pose = False, debug = False,
-										quad_contours = True)
-	detector = apriltag.Detector(options)
+	# options = apriltag.DetectorOptions(families=apriltagFamily)
+	detector = Detector(families='tag36h11')
 	results = detector.detect(image)
 	print("[INFO] {} total AprilTags detected".format(len(results)))
 	perWidth = []
@@ -43,6 +39,7 @@ def create_detector(imagepath):
 		ptA = (int(ptA[0]), int(ptA[1]))
 
 		width = distance.euclidean(ptA, ptB)
+		# width unit: mm
 		perWidth.append(width)
 		
 		# draw the bounding box of the AprilTag detection
@@ -69,7 +66,8 @@ def create_detector(imagepath):
 
 	# show the output image after AprilTag detection
 	cv2.imshow("Image", image)
-	cv2.waitKey(0)
+	cv2.waitKey(1000)
+	cv2.destroyAllWindows()
 
 	return perWidth
 

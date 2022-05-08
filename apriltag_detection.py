@@ -66,7 +66,7 @@ def create_detector(imagepath):
 
 	# show the output image after AprilTag detection
 	cv2.imshow("Image", image)
-	cv2.waitKey(1000)
+	cv2.waitKey(5000)
 	cv2.destroyAllWindows()
 
 	return perWidth

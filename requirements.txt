@@ -4,5 +4,5 @@ apriltag==0.0.16
 scipy
 matplotlib
 v4l2
-
+stereovision==1.0.4
 

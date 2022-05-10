@@ -23,7 +23,7 @@ DESIRED_DISTANCE = 500
 
 
 class PoseEstimator:
-    def __init__(self, imagepath, tags) -> None:
+    def __init__(self, imagepath, tags):
         self.tags = tags
         self.path = imagepath
         self.images = cv2.imread(imagepath)

@@ -27,12 +27,13 @@ class Detection:
 		self.vertcies = []
 		self.centerPts = []
 		self.perWidth = []
+		self.pose = []
 	
 	def create_detector(self):
 		self.image = utility.parse_images(self.path)
 		apriltagFamily = "NameOfFamily"
 		detector = Detector(families='tag36h11')
-		results = detector.detect(image)
+		results = detector.detect(self.image)
 		self.tags = results
 		print("[INFO] {} total AprilTags detected".format(len(results)))
 		
@@ -90,3 +91,20 @@ class Detection:
 		self.vertcies.append(vertices)
 		self.perWidth.append(perWidth)
 	
+	def estimate_camera_pose(self):
+		pose = []
+		for t in self.tags:
+			print(f"{t.tag_id}")
+			pose.append(t.estimate_pose(t.tag_id, t.pose_R, t.pose_t))
+			print(t.estimate_pose(t.tag_id, t.pose_R, t.pose_t))
+
+        # Visualize The Frame
+		cv2.imshow("Visualized Tags", utility.visualize_frame(self.images, self.tags))
+		cv2.waitKey(1) & 0xff
+        # exit when ESC is pressed
+		cv2.destroyAllWindows()  # destroys the window showing image
+		self.pose = pose
+
+	def estimate_distance(self):
+		
+		

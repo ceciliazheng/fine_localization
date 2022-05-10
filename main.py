@@ -4,7 +4,7 @@ Created on Thu May  5 15:34:42 2022
 
 @author: Cecilia
 """
-from utils.apriltag_detection import create_detector
+from utils.image_detection import create_detector
 from utils import Detection
 
 

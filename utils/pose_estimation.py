@@ -11,7 +11,7 @@ from matplotlib import image
 import numpy as np
 import utils.tag
 import utility
-from utils.apriltag_detection import create_detector
+from utils.image_detection import create_detector
 from time import sleep, time
 from picamera import PiCamera
 

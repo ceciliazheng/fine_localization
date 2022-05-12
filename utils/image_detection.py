@@ -11,7 +11,6 @@ Creating a detector and realize Apriltag detection.
 
 import cv2
 import numpy as np
-
 from pupil_apriltags import Detector
 from scipy.spatial import distance
 
@@ -36,6 +35,7 @@ class Detection:
 		results = detector.detect(self.image)
 		self.tags = results
 		print("[INFO] {} total AprilTags detected".format(len(results)))
+		return results
 		
 	def get_coordinates(self):
 		# loop over the AprilTag detection results
@@ -104,7 +104,4 @@ class Detection:
         # exit when ESC is pressed
 		cv2.destroyAllWindows()  # destroys the window showing image
 		self.pose = pose
-
-	def estimate_distance(self):
-		
 		

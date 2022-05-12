@@ -1,9 +1,10 @@
-import v4l2
-import fcntl
 import array
 import ctypes
+import fcntl
+
 import cv2
 import numpy as np
+import v4l2
 
 _IOC_NRBITS = 8
 _IOC_TYPEBITS = 8

@@ -1,6 +1,8 @@
-import cv2 #sudo apt-get install python-opencv
 import os
+
+import cv2  # sudo apt-get install python-opencv
 import numpy as np
+
 from utils import ArducamUtils
 
 

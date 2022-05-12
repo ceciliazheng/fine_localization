@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-from datetime import date, datetime
+import json
 import time
+from datetime import date, datetime
+
 import cv2
 import numpy as np
-import json
-from arducam_camera import MyCamera
-from stereovision.calibration import StereoCalibrator
-from stereovision.calibration import StereoCalibration
 import pupil_apriltags as apriltag
 from scipy.spatial import distance
+from stereovision.calibration import StereoCalibration, StereoCalibrator
+
+from arducam_camera import MyCamera
 
 
 class Video:

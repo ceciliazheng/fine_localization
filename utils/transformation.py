@@ -7,7 +7,7 @@ Created on Tue May  10 19:03:45 2022
 import math
 
 import utility
-from utils.pose_estimation import FOCAL_LENGTH, KNOWN_WIDTH
+from pose_estimation import FOCAL_LENGTH, KNOWN_WIDTH
 
 
 class Transformation(object):
@@ -31,29 +31,6 @@ class Transformation(object):
         zd = self.dy + self.dx * math.sin(p)
         dronePose = [xd, yd, zd, r, p, y]
         return dronePose
-
-    def camera_translation(self, res, d, xt, yt, x, y, z):
-        '''
-        d: distance of camera to apriltag
-        xt: x coordinate of tag center in image
-        yt: y coordinate of tag center in image
-        res: resolution of camera
-        x, y, z: tag coordinate in world frame
-        '''
-        dx = res[0]/2 - xt
-        dy = res[1]/2 - yt
-        yk = y + (dx * d) / self.focal
-        zk = z + (dy * d) / self.focal
-        xk = d
-        translation = [xk, yk, zk]
-        self.camera_trans = translation
-        '''
-        INCORRECT
-        '''
-        return translation
-
-    def camera_rotation(self):
-        pass
 
     def distance_to_camera(self, perWidth):
         KNOWN_WIDTH = 20

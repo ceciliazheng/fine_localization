@@ -4,6 +4,8 @@
 Created on Fri May 13 05:11:11 2022
 
 @author: cecilia
+
+Use values calculated from "pose_estimation".
 """
 
 import time

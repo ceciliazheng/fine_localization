@@ -3,17 +3,25 @@
 Created on Thu May  5 12:18:33 2022
 
 @author: Cecilia
+
+This file is part of "ENSNARE fine localization" which is released under GNU 3.0.
+See file LICENSE for full license details.
+
+Usage: 
+define apriltag coordinates and other necessary parameters as global variables;
+call functions as needed in "main.py".
 """
 
 import math
 from ctypes.wintypes import tagSIZE
 
 import cv2
+from cv2 import DIST_C
 import numpy as np
-from image_detection import Detection
 
 import utils.tag
-from utils.image_detection import create_detector
+from utils.image_detection import create_detector, Detection
+from utils import Transformation
 
 # define KNOWN_WIDTH AND FOCAL_LENGTH
 # define world coordinate of april tags
@@ -35,29 +43,30 @@ TAG_DX = 0
 TAG_DY = 1500
 TAG_DZ = 1000
 RES = [1600, 1300]
+DISTANCE = 100
 
 
 def load_camera_param():
+    '''
+    Load intrinsic camera parameters from calibration files.
+    Calibration parameters should be stored in "media/calib_results"
+    '''
     kl = np.load('media/calib_results/cam_mats_left.npy')
     kr = np.load('media/calib_results/cam_mats_right.npy')
     distl = np.load('media/calib_results/dist_coefs_left.npy')
     distr = np.load('media/calib_results/dist_coefs_right.npy')
     return kl, kr, distl, distr
 
-def camera_to_drone(self, xk, yk, zk, r, p, y):
-        '''
-        xk: x coordinate of camera frame
-        yk: y coordinate of camera frame
-        zk: z ccordinate of camera frame
-        All with respect to world frame
-        '''
-        xd = xk - self.dx * math.cos(y)
-        yd = yk * math.sin(y)
-        zd = self.dy + self.dx * math.sin(p)
-        dronePose = [xd, yd, zd, r, p, y]
-        return dronePose
-
 def camera_pose(tags, Tt, k, dist):
+    '''
+    Calculate single camera pose from detected apriltags.
+    Call Detection in main.py to get tags.
+    Input tags in "camera_pose()" for calculation.
+
+    Tt: coordinates of 4 vertices of one tag.
+    k: camera matrix
+    dist: distorsion coefficient
+    '''
     rot = []
     trans = []
     for t in tags:
@@ -81,6 +90,10 @@ def camera_pose(tags, Tt, k, dist):
     return cPose, rvec
 
 def pose_estimation(leftpath, rightpath):
+    '''
+    Calculate single camera pose first, 
+    then calculate pose of center of two cameras to be used for pose calculation of the drone.
+    '''
 
     detectionL = Detection(leftpath)
     detectionR = Detection(rightpath)
@@ -98,14 +111,23 @@ def pose_estimation(leftpath, rightpath):
     cPose = sum(cPoseL, cPoseR) / 2
     rvec = sum(rvecl, rvecr) / 2
 
+    trans = Transformation(DISTANCE, 0, -50, FOCAL_LENGTH)
+
     # end goal: calculate drone pose
-    dPose = camera_to_drone(cPose)
+    dPose = trans.camera_to_drone(cPose[0], cPose[1], cPose[2], rvec[0], rvec[1], rvec[2])
     dOri = rvec
     distance = cPose[0]
 
     return dPose, dOri, distance
 
 def desired_pose(point2D):
+    '''
+    Calculate desired pose that is supposed to reached by the drone.
+    Movement of drone = desired pose - actual pose
+    Pose difference is calculated in "pose_difference()"
+    point2D: coordinates of the 4 vertices of a tag in image frame.
+    point2D shoul come from manual input. Function called directly in "main.py".
+    '''
     kl, kr, distl, distr = load_camera_param()
     # point2D = np.array([ptA, ptB, ptC, ptD])
     distance = 1000
@@ -116,7 +138,8 @@ def desired_pose(point2D):
                   [TAG_CX, TAG_CY, TAG_CZ], [TAG_DX, TAG_DY, TAG_DZ])
     retval, rvec, tvec = cv2.solvePnP(Tt, point2D, kl, distl, useExtrinsicGuess=0, flags=0)
     cPose = np.linalg.multi_dot(rvec, Tt) + tvec + Tt
-    dPose = camera_to_drone(cPose)
+    trans = Transformation(DISTANCE, 0, -50, FOCAL_LENGTH)
+    dPose = trans.camera_to_drone(cPose[0], cPose[1], cPose[2], rvec[0], rvec[1], rvec[2])
     dOri = rvec
     
     return dPose, dOri

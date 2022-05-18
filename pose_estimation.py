@@ -4,7 +4,7 @@ Created on Thu May  5 12:18:33 2022
 
 @author: Cecilia
 
-This file is part of "ENSNARE fine localization" which is released under GNU 3.0.
+This file is part of "ENSNARE fine localization" which is released under GPL-3.0.
 See file LICENSE for full license details.
 
 Usage: 
